@@ -22,3 +22,8 @@ export async function getOffers() {
   const res = await axios.get("/9/offer");
   return res;
 }
+
+export async function getOfferById(id){
+  const res = await axios.get(`/7/offer/${id}`);
+  return res;
+}
