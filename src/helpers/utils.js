@@ -24,6 +24,8 @@ export function getFormattedDistanceToNow(date) {
 }
 
 export function isNotDef(v) {
+  if (typeof v === "string" && v.trim().length === 0) return true;
+  
   return v === undefined || v === null;
 }
 
@@ -42,4 +44,10 @@ export function getContractType(id) {
 export function getTeleworkingType(id) {
   const type = getResourceType(TELEWORKING, id);
   return type;
+}
+
+export function getShortText(text, maxLength = 230) {
+  const isLongText = text.length > maxLength;
+  const shortText = isLongText ? text.substring(0, maxLength) + "..." : text;
+  return shortText;
 }

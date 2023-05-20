@@ -1,9 +1,10 @@
-import { isNotDef } from "@helpers/utils";
+import TextOverflow from "@components/TextOverflow";
 import useOffer from "@hooks/useOffer";
 import {
   Modal,
   Button,
   ScrollArea,
+  Tooltip,
   Text,
   Grid,
   Title,
@@ -11,7 +12,9 @@ import {
   Flex,
   Box,
   Divider,
+  Badge,
 } from "@mantine/core";
+import { isNotDef } from "@helpers/utils";
 
 export default function OfferDetailsModal({ job = {}, ...props }) {
   const {
@@ -28,59 +31,151 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
     _teleworking,
   } = job;
   const { offer, isLoading } = useOffer(id, { enabled: props.opened });
+
   const {
     country,
     description,
-    department,
     experienceMin,
     journey,
     profile,
     skillsList,
+    province,
+    link,
   } = offer;
+
+  const {
+    country: countryProfile,
+    description: descriptionProfile,
+    logoUrl,
+    web,
+  } = profile || {};
+
+  const tooltipLabel = (
+    <Box>
+      <Flex align="center" mb="0.5rem">
+        <Image
+          width={40}
+          height={40}
+          src={logoUrl}
+          alt={author.name}
+          imageProps={{
+            style: {
+              borderRadius: "9999px",
+              objectPosition: "center",
+            },
+          }}
+          fit="cover"
+          sx={{
+            ".mantine-Image-placeholder": {
+              borderRadius: "9999px",
+              objectPosition: "center",
+            },
+          }}
+          withPlaceholder
+        />
+        <Text ml="1rem">{author.name}</Text>
+      </Flex>
+
+      {countryProfile && (
+        <Text my="0.2rem" c="dimmed" size="xs">
+          País:{" "}
+          <Text
+            c="dimmed"
+            size="xs"
+            fw="bolder"
+            ml="3px"
+            sx={{ display: "inline-block" }}
+          >
+            {countryProfile.value}
+          </Text>
+        </Text>
+      )}
+
+      {province && (
+        <Text my="0.2rem" c="dimmed" size="xs">
+          Provincia:
+          <Text
+            c="dimmed"
+            size="xs"
+            fw="bolder"
+            ml="3px"
+            sx={{ display: "inline-block" }}
+          >
+            {province.value}
+          </Text>
+        </Text>
+      )}
+      <TextOverflow
+        maxLength={300}
+        text={descriptionProfile}
+        mt="0.8rem"
+        c="gray.5"
+        size="sm"
+        sx={{ maxWidth: "300px" }}
+        style={{
+          display: "block",
+          width: "100%",
+          whiteSpace: "pre-wrap",
+          wordBreak: " break-word",
+          lineHeight: "1.4",
+          fontFamily: "inherit",
+        }}
+      />
+    </Box>
+  );
 
   return (
     <Modal size="1220px" className="mantine-Modal-Offer" {...props} centered>
       <Grid px="1rem">
         <Grid.Col span={4} pr={0}>
           <Box className="mantine-Modal-Offer-ScrollArea">
-            <Flex align="center" mb="1.4rem" mt="5px">
-              <Image
-                width={40}
-                height={40}
-                src={author.logoUrl}
-                alt={author.name}
-                imageProps={{
-                  style: {
-                    borderRadius: "9999px",
-                    objectPosition: "center",
-                  },
-                }}
-                fit="cover"
-                sx={{
-                  ".mantine-Image-placeholder": {
-                    borderRadius: "9999px",
-                    objectPosition: "center",
-                  },
-                }}
-                withPlaceholder
-              />
-              <Box ml="0.7rem">
-                <a
-                  href={author.uri}
-                  style={{ display: "block" }}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <Text td="underline" color="gray.4">
-                    {author.name}
-                  </Text>
-                </a>
+            <Tooltip
+              label={profile ? tooltipLabel : null}
+              color="gray"
+              position="bottom-start"
+              withArrow
+              arrowPosition="center"
+            >
+              <Flex align="center" mb="1.4rem" mt="5px">
+                <Image
+                  width={40}
+                  height={40}
+                  src={author.logoUrl}
+                  alt={author.name}
+                  imageProps={{
+                    style: {
+                      borderRadius: "9999px",
+                      objectPosition: "center",
+                    },
+                  }}
+                  fit="cover"
+                  sx={{
+                    ".mantine-Image-placeholder": {
+                      borderRadius: "9999px",
+                      objectPosition: "center",
+                    },
+                  }}
+                  withPlaceholder
+                />
+                <Box ml="0.7rem">
+                  <a
+                    title="Click para ver más sobre la empresa"
+                    href={author.uri}
+                    style={{ display: "block" }}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <Text td="underline" color="gray.4">
+                      {author.name}
+                    </Text>
+                  </a>
 
-                <Text size="sm" c="dimmed">
-                  Hace {_published}
-                </Text>
-              </Box>
-            </Flex>
+                  <Text size="sm" c="dimmed">
+                    Hace {_published}
+                  </Text>
+                </Box>
+              </Flex>
+            </Tooltip>
 
             <Title order={3} pr="1rem">
               {title}
@@ -155,21 +250,103 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
                   <Text>Cargando datos..</Text>
                 ) : (
                   <Box className="mantine-Modal-Offer-ScrollArea">
-                    <Title order={4}>Descripción del puesto</Title>
-                    <Text>
-                      <pre
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          whiteSpace: "pre-wrap",
-                          wordBreak: " break-word",
-                          lineHeight: "1.4",
-                          fontFamily: "inherit",
-                        }}
-                      >
-                        {description}
-                      </pre>
-                    </Text>
+                    <Box mb="2rem">
+                      <Title order={3}>Descripción del puesto</Title>
+
+                      <Flex>
+                        <Text size="sm" c="dimmed">
+                          Experiencia: {experienceMin?.value}
+                        </Text>
+
+                        <Text size="sm" c="dimmed" ml="0.5rem">
+                          - Tipo de jornada: {journey?.value}
+                        </Text>
+                      </Flex>
+
+                      <Text>
+                        <pre
+                          style={{
+                            display: "block",
+                            width: "100%",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: " break-word",
+                            lineHeight: "1.4",
+                            fontFamily: "inherit",
+                          }}
+                        >
+                          {description}
+                        </pre>
+                      </Text>
+                    </Box>
+
+                    <Box mb="2rem">
+                      <Title order={3}>Habilidades requeridas</Title>
+                      {skillsList?.length < 1 ? (
+                        <Text mt="1rem">No definidas</Text>
+                      ) : (
+                        <Flex
+                          align="center"
+                          columnGap="4px"
+                          rowGap="7px"
+                          wrap="wrap"
+                          mt="1rem"
+                        >
+                          {skillsList?.map((sk) => (
+                            <Badge
+                              key={sk.skill}
+                              size="lg"
+                              color="gray"
+                              variant="filled"
+                            >
+                              {sk.skill}
+                            </Badge>
+                          ))}
+                        </Flex>
+                      )}
+                    </Box>
+
+                    <Box>
+                      <Title order={3}>Información extra</Title>
+                      {!isNotDef(link) && (
+                        <a
+                          title="Click para ver más sobre la ofera"
+                          href={link}
+                          style={{ display: "block" }}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          <Text mt="1rem">
+                            Ver más sobre la oferta en infojobs.
+                          </Text>
+                        </a>
+                      )}
+
+                      {!isNotDef(author.uri) && (
+                        <a
+                          title="Click para ver más sobre la empresa"
+                          href={author.uri}
+                          style={{ display: "block" }}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          <Text mt="1rem">
+                            Ver más sobre la empresa en infojobs.
+                          </Text>
+                        </a>
+                      )}
+
+                      {!isNotDef(web) && (
+                        <a
+                          title="Click para visitar el sitio web de la empresa"
+                          href={web}
+                          style={{ display: "block" }}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          <Text mt="1rem">Ver el sitio web de la empresa.</Text>
+                        </a>
+                      )}
+                    </Box>
                   </Box>
                 )}
               </ScrollArea>

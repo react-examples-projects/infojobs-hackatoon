@@ -28,12 +28,13 @@ export default function OfferListItem(props) {
 
   return (
     <>
-      <OfferDetailsModal
-        job={{ ...props, _published, _contractType, _teleworking }}
-        opened={isOpenModalDetails}
-        onClose={toggleOpenModalDetails}
-      />
-
+      {isOpenModalDetails && (
+        <OfferDetailsModal
+          job={{ ...props, _published, _contractType, _teleworking }}
+          opened={isOpenModalDetails}
+          onClose={toggleOpenModalDetails}
+        />
+      )}
       <Box
         key={id}
         data-offer-id={id}
