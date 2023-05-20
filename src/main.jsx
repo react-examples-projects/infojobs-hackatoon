@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "app";
-import "@css/index.css";
+import "@css/index.scss";
 import "inter-ui/inter.css";
 
 import { MantineProvider } from "@mantine/core";
