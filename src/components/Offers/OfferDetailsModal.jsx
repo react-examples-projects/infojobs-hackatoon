@@ -2,7 +2,7 @@ import TextOverflow from "@components/TextOverflow";
 import useOffer from "@hooks/useOffer";
 import {
   Modal,
-  Button,
+  Skeleton,
   ScrollArea,
   Tooltip,
   Text,
@@ -30,7 +30,10 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
     _contractType,
     _teleworking,
   } = job;
-  const { offer, isLoading } = useOffer(id, { enabled: props.opened });
+
+  const { offer, isLoading, isError, error } = useOffer(id, {
+    enabled: props.opened,
+  });
 
   const {
     country,
@@ -183,8 +186,13 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
 
             <Box mt="1.2rem">
               <Text c="dimmed">Ubicación</Text>
-              <Text>
-                {city} | {country?.value || "Desconocido"}
+              <Text sx={{ display: "flex", alignItems: "center" }}>
+                {city}
+                {isLoading ? (
+                  <Skeleton height={20} width={70} ml="0.5rem" />
+                ) : (
+                  " - " + country?.value || "Desconocido"
+                )}
               </Text>
               <Divider mt="0.8rem" />
             </Box>
@@ -246,13 +254,12 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
 
             <Grid.Col span={11} pl={0}>
               <ScrollArea h={840} offsetScrollbars>
-                {isLoading ? (
-                  <Text>Cargando datos..</Text>
-                ) : (
-                  <Box className="mantine-Modal-Offer-ScrollArea">
-                    <Box mb="2rem">
-                      <Title order={3}>Descripción del puesto</Title>
-
+                <Box className="mantine-Modal-Offer-ScrollArea">
+                  <Box mb="2rem">
+                    <Title order={3}>Descripción del puesto</Title>
+                    {isLoading ? (
+                      <Skeleton width={380} height={21} />
+                    ) : (
                       <Flex>
                         <Text size="sm" c="dimmed">
                           Experiencia: {experienceMin?.value}
@@ -262,7 +269,11 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
                           - Tipo de jornada: {journey?.value}
                         </Text>
                       </Flex>
+                    )}
 
+                    {isLoading ? (
+                      <Skeleton width="100%" height={300} mt="1rem" />
+                    ) : (
                       <Text>
                         <pre
                           style={{
@@ -277,37 +288,43 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
                           {description}
                         </pre>
                       </Text>
-                    </Box>
+                    )}
+                  </Box>
 
-                    <Box mb="2rem">
-                      <Title order={3}>Habilidades requeridas</Title>
-                      {skillsList?.length < 1 ? (
-                        <Text mt="1rem">No definidas</Text>
-                      ) : (
-                        <Flex
-                          align="center"
-                          columnGap="4px"
-                          rowGap="7px"
-                          wrap="wrap"
-                          mt="1rem"
-                        >
-                          {skillsList?.map((sk) => (
-                            <Badge
-                              key={sk.skill}
-                              size="lg"
-                              color="gray"
-                              variant="filled"
-                            >
-                              {sk.skill}
-                            </Badge>
-                          ))}
-                        </Flex>
-                      )}
-                    </Box>
+                  <Box mb="2rem">
+                    <Title order={3}>Habilidades requeridas</Title>
+                    {isLoading ? (
+                      <Skeleton mt="1rem" width="100%" height={40} />
+                    ) : skillsList?.length < 1 ? (
+                      <Text mt="1rem">No definidas</Text>
+                    ) : (
+                      <Flex
+                        align="center"
+                        columnGap="4px"
+                        rowGap="7px"
+                        wrap="wrap"
+                        mt="1rem"
+                      >
+                        {skillsList?.map((sk) => (
+                          <Badge
+                            key={sk.skill}
+                            size="lg"
+                            color="gray"
+                            variant="filled"
+                          >
+                            {sk.skill}
+                          </Badge>
+                        ))}
+                      </Flex>
+                    )}
+                  </Box>
 
-                    <Box>
-                      <Title order={3}>Información extra</Title>
-                      {!isNotDef(link) && (
+                  <Box>
+                    <Title order={3}>Información extra</Title>
+                    {isLoading ? (
+                      <Skeleton mt="1rem" width={267} height={24.8} />
+                    ) : (
+                      !isNotDef(link) && (
                         <a
                           title="Click para ver más sobre la ofera"
                           href={link}
@@ -319,9 +336,13 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
                             Ver más sobre la oferta en infojobs.
                           </Text>
                         </a>
-                      )}
+                      )
+                    )}
 
-                      {!isNotDef(author.uri) && (
+                    {isLoading ? (
+                      <Skeleton mt="1rem" width={287} height={24.8} />
+                    ) : (
+                      !isNotDef(author.uri) && (
                         <a
                           title="Click para ver más sobre la empresa"
                           href={author.uri}
@@ -333,9 +354,13 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
                             Ver más sobre la empresa en infojobs.
                           </Text>
                         </a>
-                      )}
+                      )
+                    )}
 
-                      {!isNotDef(web) && (
+                    {isLoading ? (
+                      <Skeleton mt="1rem" width={230} height={24.8} />
+                    ) : (
+                      !isNotDef(web) && (
                         <a
                           title="Click para visitar el sitio web de la empresa"
                           href={web}
@@ -345,10 +370,10 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
                         >
                           <Text mt="1rem">Ver el sitio web de la empresa.</Text>
                         </a>
-                      )}
-                    </Box>
+                      )
+                    )}
                   </Box>
-                )}
+                </Box>
               </ScrollArea>
             </Grid.Col>
           </Grid>

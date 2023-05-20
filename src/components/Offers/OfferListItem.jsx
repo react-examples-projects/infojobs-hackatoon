@@ -35,6 +35,7 @@ export default function OfferListItem(props) {
           onClose={toggleOpenModalDetails}
         />
       )}
+      
       <Box
         key={id}
         data-offer-id={id}
