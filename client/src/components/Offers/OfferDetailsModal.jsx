@@ -13,6 +13,7 @@ import {
   Box,
   Divider,
   Badge,
+  Button,
 } from "@mantine/core";
 import { isNotDef } from "@helpers/utils";
 
@@ -255,41 +256,44 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
             <Grid.Col span={11} pl={0}>
               <ScrollArea h={840} offsetScrollbars>
                 <Box className="mantine-Modal-Offer-ScrollArea">
-                  <Box mb="2rem">
-                    <Title order={3}>Descripción del puesto</Title>
-                    {isLoading ? (
-                      <Skeleton width={380} height={21} />
-                    ) : (
-                      <Flex>
-                        <Text size="sm" c="dimmed">
-                          Experiencia: {experienceMin?.value}
-                        </Text>
+                  <Flex align="start">
+                    <Box mb="2rem">
+                      <Title order={3}>Descripción del puesto</Title>
+                      {isLoading ? (
+                        <Skeleton width={380} height={21} />
+                      ) : (
+                        <Flex>
+                          <Text size="sm" c="dimmed">
+                            Experiencia: {experienceMin?.value}
+                          </Text>
 
-                        <Text size="sm" c="dimmed" ml="0.5rem">
-                          - Tipo de jornada: {journey?.value}
-                        </Text>
-                      </Flex>
-                    )}
+                          <Text size="sm" c="dimmed" ml="0.5rem">
+                            - Tipo de jornada: {journey?.value}
+                          </Text>
+                        </Flex>
+                      )}
 
-                    {isLoading ? (
-                      <Skeleton width="100%" height={300} mt="1rem" />
-                    ) : (
-                      <Text>
-                        <pre
-                          style={{
-                            display: "block",
-                            width: "100%",
-                            whiteSpace: "pre-wrap",
-                            wordBreak: " break-word",
-                            lineHeight: "1.4",
-                            fontFamily: "inherit",
-                          }}
-                        >
-                          {description}
-                        </pre>
-                      </Text>
-                    )}
-                  </Box>
+                      {isLoading ? (
+                        <Skeleton width="100%" height={350} mt="1rem" />
+                      ) : (
+                        <Text>
+                          <pre
+                            style={{
+                              display: "block",
+                              width: "100%",
+                              whiteSpace: "pre-wrap",
+                              wordBreak: " break-word",
+                              lineHeight: "1.4",
+                              fontFamily: "inherit",
+                            }}
+                            dangerouslySetInnerHTML={{ __html: description }}
+                          />
+                        </Text>
+                      )}
+                    </Box>
+
+                    <Button size="xs">Recrear test ténico</Button>
+                  </Flex>
 
                   <Box mb="2rem">
                     <Title order={3}>Habilidades requeridas</Title>
