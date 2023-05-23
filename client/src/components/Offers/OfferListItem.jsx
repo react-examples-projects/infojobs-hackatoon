@@ -8,6 +8,9 @@ import {
   isNotDef,
 } from "@helpers/utils";
 import { Box, Flex, Title, Text, Image, Badge, Button } from "@mantine/core";
+import useTest from "@hooks/useTest";
+import TestWarningModal from "@components/TestWarningModal";
+import BasicTestModal from "@components/BasicTestModal";
 
 export default function OfferListItem(props) {
   const {
@@ -25,6 +28,20 @@ export default function OfferListItem(props) {
   const _teleworking = getTeleworkingType(teleworking?.id);
   const isDefinedCity = !isNotDef(city);
   const [isOpenModalDetails, toggleOpenModalDetails] = useToggle();
+  const [isOpenModalWarning, toggleOpenModalWarning] = useToggle();
+  const [isOpenBasicTestModal, toggleOpenBasicTestModal] = useToggle();
+
+  const { data, isPending, isError, error, mutateAsync } = useTest();
+
+  const createBasicTest = async () => {
+    try {
+      await mutateAsync(id);
+      toggleOpenModalWarning();
+      toggleOpenBasicTestModal();
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   return (
     <>
@@ -35,7 +52,7 @@ export default function OfferListItem(props) {
           onClose={toggleOpenModalDetails}
         />
       )}
-      
+
       <Box
         key={id}
         data-offer-id={id}
@@ -115,6 +132,17 @@ export default function OfferListItem(props) {
                   Ver más
                 </Button>
 
+                <Button
+                  size="xs"
+                  variant="light"
+                  mr="0.4rem"
+                  loading={isPending}
+                  onClick={toggleOpenModalWarning}
+                  // onClick={() => mutate(id)}
+                >
+                  Recrear test
+                </Button>
+
                 <Button size="xs" variant="light">
                   Recrear test técnico
                 </Button>
@@ -123,6 +151,34 @@ export default function OfferListItem(props) {
           </Box>
         </Flex>
       </Box>
+
+      {!isPending && data !== undefined && (
+        <BasicTestModal
+          opened={isOpenBasicTestModal}
+          onClose={toggleOpenBasicTestModal}
+          tests={data?.data}
+        />
+      )}
+
+      <TestWarningModal
+        opened={isOpenModalWarning}
+        onClose={toggleOpenModalWarning}
+        btnFooter={
+          <Flex gap="5px" mt="1rem" justify="end" sx={{ width: "100%" }}>
+            <Button onClick={createBasicTest} loading={isPending}>
+              Aceptar
+            </Button>
+            <Button
+              onClick={toggleOpenModalWarning}
+              color="red.8"
+              variant="light"
+              disabled={isPending}
+            >
+              Cancelar
+            </Button>
+          </Flex>
+        }
+      />
     </>
   );
 }

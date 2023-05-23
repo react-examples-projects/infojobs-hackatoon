@@ -109,6 +109,7 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
           </Text>
         </Text>
       )}
+
       <TextOverflow
         maxLength={300}
         text={descriptionProfile}
@@ -292,7 +293,7 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
                       )}
                     </Box>
 
-                    <Button size="xs">Recrear test ténico</Button>
+                    <Button size="xs">Recrear test</Button>
                   </Flex>
 
                   <Box mb="2rem">
