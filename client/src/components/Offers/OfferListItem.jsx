@@ -30,7 +30,6 @@ export default function OfferListItem(props) {
   const [isOpenModalDetails, toggleOpenModalDetails] = useToggle();
   const [isOpenModalWarning, toggleOpenModalWarning] = useToggle();
   const [isOpenBasicTestModal, toggleOpenBasicTestModal] = useToggle();
-
   const { data, isPending, isError, error, mutateAsync } = useTest();
 
   const createBasicTest = async () => {
@@ -144,7 +143,7 @@ export default function OfferListItem(props) {
                 </Button>
 
                 <Button size="xs" variant="light">
-                  Recrear test técnico
+                  Analizar oferta
                 </Button>
               </Box>
             </Flex>
@@ -156,17 +155,19 @@ export default function OfferListItem(props) {
         <BasicTestModal
           opened={isOpenBasicTestModal}
           onClose={toggleOpenBasicTestModal}
-          tests={data?.data}
+          tests={data?.data?.questions}
         />
       )}
 
       <TestWarningModal
+        closeOnClickOutside={!isPending}
+        closeOnEscape={!isPending}
         opened={isOpenModalWarning}
         onClose={toggleOpenModalWarning}
         btnFooter={
           <Flex gap="5px" mt="1rem" justify="end" sx={{ width: "100%" }}>
             <Button onClick={createBasicTest} loading={isPending}>
-              Aceptar
+              {isPending ? "Generando test" : "Aceptar"}
             </Button>
             <Button
               onClick={toggleOpenModalWarning}

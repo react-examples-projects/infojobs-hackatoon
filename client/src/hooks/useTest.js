@@ -6,7 +6,13 @@ export default function useTest() {
     mutationFn: async (id) => {
       let offerData = await getOfferById(id);
       const { title, description, skillsList, minRequirements } = offerData;
-      return getBasicTest({ title, description, skillsList, minRequirements });
+      return getBasicTest({
+        title,
+        description,
+        skillsList,
+        minRequirements,
+        id,
+      });
     },
   });
 

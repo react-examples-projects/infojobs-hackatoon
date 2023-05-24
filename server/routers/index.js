@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const openai = require("../config/openai");
+const Test = require("../models/Test");
 const { error, success } = require("../helpers/httpResponses");
 const { extractJSONS } = require("../helpers/utils");
 
@@ -8,15 +9,15 @@ const content = `Eres ChatGPT, un gran modelo de lenguaje entrenado por OpenAI. 
                  Límite de conocimientos: {límite de conocimientos} Fecha actual: {fecha_actual}`;
 
 router.post("/", async (req = express.Request, res = express.response) => {
-  const { title, skillsList, description } = req.body;
+  const { title, skillsList, description, id } = req.body;
   let flag = true,
     tries = 0,
     errorObj = null;
-  let skills = ''
-  if(skillsList && skillsList?.length > 0){
+  let skills = "";
+  if (skillsList && skillsList?.length > 0) {
     skills += " El test debe contener temas relacionados a: ";
-    skills += skillsList.map(sk => sk.skill).join(', ') + ". "
-    console.log(skills)
+    skills += skillsList.map((sk) => sk.skill).join(", ") + ". ";
+    console.log(skills);
   }
 
   while (flag && tries <= 3) {
@@ -54,15 +55,19 @@ router.post("/", async (req = express.Request, res = express.response) => {
       console.log(jsons.map((json) => json));
       flag = false;
       tries++;
-      
-      const test = Array.isArray(jsons?.[0]) ? jsons.flat() : jsons
-      success(res, test);
 
+      const test = Array.isArray(jsons?.[0]) ? jsons.flat() : jsons;
+      console.log(test);
+      
+      const basicTest = await Test.create({
+        job_id: id,
+        questions: test,
+      });
+      success(res, basicTest);
     } catch (err) {
       console.error(err);
       errorObj = err;
     }
-    console.log({ flag, tries });
 
     if ((tries >= 3 || flag) && errorObj !== null) {
       error(res, errorObj.message);

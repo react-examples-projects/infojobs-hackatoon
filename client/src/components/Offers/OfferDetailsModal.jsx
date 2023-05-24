@@ -186,6 +186,12 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
               {title}
             </Title>
 
+            {!isLoading && (
+              <Button size="xs" mt="0.6rem" variant="light">
+                Recrear test
+              </Button>
+            )}
+
             <Box mt="1.2rem">
               <Text c="dimmed">Ubicación</Text>
               <Text sx={{ display: "flex", alignItems: "center" }}>
@@ -258,7 +264,7 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
               <ScrollArea h={840} offsetScrollbars>
                 <Box className="mantine-Modal-Offer-ScrollArea">
                   <Flex align="start">
-                    <Box mb="2rem">
+                    <Box mb="2rem" sx={{ width: "100%" }}>
                       <Title order={3}>Descripción del puesto</Title>
                       {isLoading ? (
                         <Skeleton width={380} height={21} />
@@ -292,8 +298,6 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
                         </Text>
                       )}
                     </Box>
-
-                    <Button size="xs">Recrear test</Button>
                   </Flex>
 
                   <Box mb="2rem">
