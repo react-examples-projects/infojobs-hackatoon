@@ -58,7 +58,7 @@ export function getError(
 ) {
   const { message, response } = error;
   if (response?.data?.message) {
-    return response?.data?.message;
+    return response?.data?.message?.toString();
   }
 
   if (response?.statusText) {

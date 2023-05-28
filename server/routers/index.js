@@ -52,13 +52,10 @@ router.post("/", async (req = express.Request, res = express.response) => {
 
         const data = result.data.choices[0].message.content;
         const jsons = extractJSONS(data);
-
-        console.log(jsons.map((json) => json));
         flag = false;
         tries++;
 
         const test = Array.isArray(jsons?.[0]) ? jsons.flat() : jsons;
-        console.log(test);
 
         const basicTest = await Test.create({
           jobId: id,
@@ -67,9 +64,10 @@ router.post("/", async (req = express.Request, res = express.response) => {
 
         const testProtected = basicTest.toObject();
 
+        // users cant see the correct answers
         testProtected.questions.forEach((q) => delete q.validOptionIndex);
 
-        success(res, testProtected);
+        success(res, testProtected, 201);
       } catch (err) {
         console.error(err);
         errorObj = err;
@@ -86,7 +84,32 @@ router.post("/", async (req = express.Request, res = express.response) => {
 });
 
 router.post("/check", async (req = express.Request, res = express.response) => {
-  res.json({});
+  try {
+    const { jobId, answers } = req.body;
+    const test = await Test.findOne({ jobId }).lean();
+
+    if (!test) {
+      return success(res, { ok: false, message: "No se encontro la prueba" });
+    }
+
+    const questions = test.questions.map((question, index) => {
+      const userAnswer = answers[index];
+      console.log({ userAnswer });
+      const isSuccess = question.validOptionIndex.includes(
+        userAnswer.selectedOption
+      );
+      return {
+        ...question,
+        selectedOption: userAnswer.selectedOption,
+        index,
+        isSuccess,
+      };
+    });
+
+    success(res, questions);
+  } catch (err) {
+    error(res, err.message);
+  }
 });
 
 module.exports = router;

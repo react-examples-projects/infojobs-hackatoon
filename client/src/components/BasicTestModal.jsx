@@ -11,23 +11,114 @@ export default function BasicTestModal({ test, tests = [], ...props }) {
   const { jobId } = test;
   const { question, options, _id } = tests[index] || {};
   const [answers, setAnswers] = useState({ jobId, answers: [] });
+  const [results, setResults] = useState(null);
 
   const nextQuestion = async () => {
     if (index === tests.length - 1) {
       try {
-        await mutateAsync(answers);
+        const updatedAnswers = {
+          ...answers,
+          answers: [
+            ...answers.answers,
+            { index, selectedOption, _id, question },
+          ],
+        };
+        const results = await mutateAsync(updatedAnswers);
+        setResults(results);
+        console.log({ results });
       } catch (err) {
         console.error(err);
       }
     } else {
       setAnswers((prev) => ({
         ...prev,
-        answers: [...prev.answers, { index, _id, question }],
+        answers: [...prev.answers, { index, selectedOption, _id, question }],
       }));
       setSelectedOption(null);
       setIndex((prev) => prev + 1);
     }
   };
+
+  if (results) {
+    return (
+      <Modal
+        size="600px"
+        closeOnEscape={false}
+        closeOnClickOutside={false}
+        opened
+        overlayProps={{
+          opacity: 0.55,
+          blur: 3,
+        }}
+        centered
+      >
+        <Box>
+          <Title order={4} ml="1rem">
+            Resultados de la prueba básica
+          </Title>
+
+          {results.map((result, index) => (
+            <Box
+              mb="0.5rem"
+              sx={(theme) => ({
+                maxWidth: "100%",
+                display: "block",
+                width: "100%",
+                textAlign: "left",
+                // backgroundColor: result.validOptionIndex.includes(
+                //   result.selectedOption
+                // )
+                //   ? theme.colors.green[7]
+                //   : theme.colors.dark[6],
+                borderRadius: "5px",
+                cursor: "pointer",
+              })}
+              p="1rem"
+            >
+              <Text>{result.question}</Text>
+              <Box>
+                {result.options.map((op, index) => {
+                  const { isSuccess, selectedOption } = result;
+                  const isCorrect = isSuccess && index === selectedOption;
+                  const isFailed = !isSuccess && index === selectedOption;
+
+                  const getBackgroundColor = (theme) => {
+                    if (isCorrect) return theme.colors.green[8];
+                    if (isFailed) return theme.colors.red[8];
+                    return theme.colors.dark[6];
+                  };
+
+                  return (
+                    <Box
+                      mt="1rem"
+                      mb="0.5rem"
+                      sx={(theme) => ({
+                        maxWidth: "100%",
+                        display: "block",
+                        width: "100%",
+                        textAlign: "left",
+                        backgroundColor: getBackgroundColor(theme),
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      })}
+                      p="0.6rem"
+                    >
+                      <Text
+                        size="sm"
+                        color={isCorrect || isFailed ? "dark.9" : "white"}
+                      >
+                        {op}
+                      </Text>
+                    </Box>
+                  );
+                })}
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      </Modal>
+    );
+  }
 
   return (
     <Modal

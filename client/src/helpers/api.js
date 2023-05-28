@@ -48,6 +48,6 @@ export async function getBasicTest(data) {
 
 export async function checkBasicTest(data) {
   const res = await remoteApi.post("/check", data);
-  return res;
+  return res.data;
 }
 
