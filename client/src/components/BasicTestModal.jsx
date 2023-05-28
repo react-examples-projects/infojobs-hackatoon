@@ -3,6 +3,7 @@ import { Modal, Title, Text, Box, Button, Flex, Alert } from "@mantine/core";
 import { useState } from "react";
 import { FiAlertCircle } from "react-icons/fi";
 import { getError } from "@helpers/utils";
+import useToggle from "@hooks/useToggle";
 
 export default function BasicTestModal({ test, tests = [], ...props }) {
   const { mutateAsync, isPending, error, isError } = useCheckTest();
@@ -12,6 +13,7 @@ export default function BasicTestModal({ test, tests = [], ...props }) {
   const { question, options, _id } = tests[index] || {};
   const [answers, setAnswers] = useState({ jobId, answers: [] });
   const [results, setResults] = useState(null);
+  const [isOpenResultModal, toggleOpenResultModal] = useToggle(true);
 
   const nextQuestion = async () => {
     if (index === tests.length - 1) {
@@ -45,7 +47,8 @@ export default function BasicTestModal({ test, tests = [], ...props }) {
         size="600px"
         closeOnEscape={false}
         closeOnClickOutside={false}
-        opened
+        opened={isOpenResultModal}
+        onClose={toggleOpenResultModal}
         overlayProps={{
           opacity: 0.55,
           blur: 3,
@@ -79,8 +82,11 @@ export default function BasicTestModal({ test, tests = [], ...props }) {
               <Box>
                 {result.options.map((op, index) => {
                   const { isSuccess, selectedOption } = result;
-                  const isCorrect = isSuccess && index === selectedOption;
+                  const isCorrect =
+                    isSuccess && result.validOptionIndex.includes(index);
                   const isFailed = !isSuccess && index === selectedOption;
+                  const userAnswerBorder =
+                    isCorrect && index === selectedOption;
 
                   const getBackgroundColor = (theme) => {
                     if (isCorrect) return theme.colors.green[8];
@@ -97,7 +103,14 @@ export default function BasicTestModal({ test, tests = [], ...props }) {
                         display: "block",
                         width: "100%",
                         textAlign: "left",
-                        backgroundColor: getBackgroundColor(theme),
+                        backgroundColor: userAnswerBorder
+                          ? theme.colors.lime[5]
+                          : getBackgroundColor(theme),
+                        border: `2px solid ${
+                          !isSuccess && result.validOptionIndex.includes(index)
+                            ? "green"
+                            : "transparent"
+                        }`,
                         borderRadius: "5px",
                         cursor: "pointer",
                       })}

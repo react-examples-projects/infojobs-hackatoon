@@ -162,14 +162,16 @@ export default function OfferListItem(props) {
         </Flex>
       </Box>
 
-      {!isPending && data !== undefined && (
-        <BasicTestModal
-          opened={isOpenBasicTestModal}
-          onClose={toggleOpenBasicTestModal}
-          tests={data?.data?.questions}
-          test={data?.data}
-        />
-      )}
+      {!isPending &&
+        data !== undefined &&
+        data?.data?.questions?.length > 0 && (
+          <BasicTestModal
+            opened={isOpenBasicTestModal}
+            onClose={toggleOpenBasicTestModal}
+            tests={data?.data?.questions}
+            test={data?.data}
+          />
+        )}
 
       <TestWarningModal
         closeOnClickOutside={!isPending}
@@ -188,6 +190,21 @@ export default function OfferListItem(props) {
                 {getError(error)}
               </Alert>
             )}
+
+            {data?.data?.questions?.length < 1 && (
+              <Alert
+                icon={<FiAlertCircle />}
+                title="Something went wrong"
+                color="red"
+                mt="1rem"
+              >
+                Intenta de nuevo crear un nuevo test para la oferta.
+                <Button mt="0.8ren" onClick={createBasicTest} fullWidth>
+                  Reintentar
+                </Button>
+              </Alert>
+            )}
+
             <Flex gap="5px" mt="1rem" justify="end" sx={{ width: "100%" }}>
               <Button onClick={createBasicTest} loading={isPending}>
                 {isPending ? "Generando test" : "Aceptar"}
