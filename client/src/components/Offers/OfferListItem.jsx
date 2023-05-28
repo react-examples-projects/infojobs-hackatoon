@@ -7,7 +7,18 @@ import {
   getFormattedDistanceToNow,
   isNotDef,
 } from "@helpers/utils";
-import { Box, Flex, Title, Text, Image, Badge, Button } from "@mantine/core";
+import {
+  Box,
+  Flex,
+  Title,
+  Text,
+  Image,
+  Badge,
+  Button,
+  Alert,
+} from "@mantine/core";
+import { FiAlertCircle } from "react-icons/fi";
+import { getError } from "@helpers/utils";
 import useTest from "@hooks/useTest";
 import TestWarningModal from "@components/TestWarningModal";
 import BasicTestModal from "@components/BasicTestModal";
@@ -156,6 +167,7 @@ export default function OfferListItem(props) {
           opened={isOpenBasicTestModal}
           onClose={toggleOpenBasicTestModal}
           tests={data?.data?.questions}
+          test={data?.data}
         />
       )}
 
@@ -165,19 +177,31 @@ export default function OfferListItem(props) {
         opened={isOpenModalWarning}
         onClose={toggleOpenModalWarning}
         btnFooter={
-          <Flex gap="5px" mt="1rem" justify="end" sx={{ width: "100%" }}>
-            <Button onClick={createBasicTest} loading={isPending}>
-              {isPending ? "Generando test" : "Aceptar"}
-            </Button>
-            <Button
-              onClick={toggleOpenModalWarning}
-              color="red.8"
-              variant="light"
-              disabled={isPending}
-            >
-              Cancelar
-            </Button>
-          </Flex>
+          <>
+            {isError && (
+              <Alert
+                icon={<FiAlertCircle />}
+                title="Something went wrong"
+                color="red"
+                mt="1rem"
+              >
+                {getError(error)}
+              </Alert>
+            )}
+            <Flex gap="5px" mt="1rem" justify="end" sx={{ width: "100%" }}>
+              <Button onClick={createBasicTest} loading={isPending}>
+                {isPending ? "Generando test" : "Aceptar"}
+              </Button>
+              <Button
+                onClick={toggleOpenModalWarning}
+                color="red.8"
+                variant="light"
+                disabled={isPending}
+              >
+                Cancelar
+              </Button>
+            </Flex>
+          </>
         }
       />
     </>

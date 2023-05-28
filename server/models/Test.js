@@ -1,6 +1,10 @@
 const { Schema, model } = require("mongoose");
 const TestSchema = new Schema(
   {
+    jobId: {
+      type: String,
+      required: [true, "El id de la oferta es obligatoria"],
+    },
     questions: [
       {
         question: {
@@ -19,7 +23,7 @@ const TestSchema = new Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: { updatedAt: false } }
 );
 
 module.exports = model("Test", TestSchema);

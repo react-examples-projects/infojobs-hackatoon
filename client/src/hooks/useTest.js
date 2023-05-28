@@ -3,6 +3,7 @@ import { getBasicTest, getOfferById } from "@helpers/api";
 
 export default function useTest() {
   const mutation = useMutation({
+    mutationKey:"createTest",
     mutationFn: async (id) => {
       let offerData = await getOfferById(id);
       const { title, description, skillsList, minRequirements } = offerData;

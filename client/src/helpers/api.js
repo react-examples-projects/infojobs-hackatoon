@@ -44,3 +44,10 @@ export async function getBasicTest(data) {
   const res = await remoteApi.post("", data);
   return res;
 }
+
+
+export async function checkBasicTest(data) {
+  const res = await remoteApi.post("/check", data);
+  return res;
+}
+

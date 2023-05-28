@@ -8,13 +8,13 @@ function validationError(res, data) {
 
 function error(
   res,
-  data = "An error while process the request",
+  message = "An error while process the request",
   statusCode = 400
 ) {
   res.status(statusCode).json({
     ok: false,
     error: true,
-    data,
+    message,
     statusCode,
   });
 }

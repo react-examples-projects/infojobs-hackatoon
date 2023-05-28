@@ -1,13 +1,29 @@
-import { Modal, Title, Text, Box, Button, Flex } from "@mantine/core";
+import useCheckTest from "@hooks/useCheckTest";
+import { Modal, Title, Text, Box, Button, Flex, Alert } from "@mantine/core";
 import { useState } from "react";
+import { FiAlertCircle } from "react-icons/fi";
+import { getError } from "@helpers/utils";
 
-export default function BasicTestModal({ tests = [], ...props }) {
+export default function BasicTestModal({ test, tests = [], ...props }) {
+  const { mutateAsync, isPending, error, isError } = useCheckTest();
   const [index, setIndex] = useState(0);
-  const { question, options } = tests[index];
   const [selectedOption, setSelectedOption] = useState(null);
-  const nextQuestion = () => {
+  const { jobId } = test;
+  const { question, options, _id } = tests[index] || {};
+  const [answers, setAnswers] = useState({ jobId, answers: [] });
+
+  const nextQuestion = async () => {
     if (index === tests.length - 1) {
+      try {
+        await mutateAsync(answers);
+      } catch (err) {
+        console.error(err);
+      }
     } else {
+      setAnswers((prev) => ({
+        ...prev,
+        answers: [...prev.answers, { index, _id, question }],
+      }));
       setSelectedOption(null);
       setIndex((prev) => prev + 1);
     }
@@ -59,12 +75,31 @@ export default function BasicTestModal({ tests = [], ...props }) {
             <Text>{option}</Text>
           </Box>
         ))}
+
+        {isError && (
+          <Alert
+            mt="1rem"
+            icon={<FiAlertCircle />}
+            title="Something went wrong"
+            color="red"
+          >
+            {getError(error)}
+          </Alert>
+        )}
+
         <Text className="mt-3 mb-2" sx={{ textAlign: "right" }}>
           Pregunta {index + 1}/{tests?.length}
         </Text>
+
         <Flex justify="end" mt="1rem">
           {index === tests.length - 1 ? (
-            <Button>Comprobar respuestas</Button>
+            <Button
+              loading={isPending}
+              disabled={isPending}
+              onClick={isPending ? null : nextQuestion}
+            >
+              {isPending ? "Revisando respuestas..." : "Comprobar respuestas"}
+            </Button>
           ) : (
             <Button
               onClick={selectedOption === null ? null : nextQuestion}

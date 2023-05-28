@@ -51,3 +51,19 @@ export function getShortText(text, maxLength = 230) {
   const shortText = isLongText ? text.substring(0, maxLength) + "..." : text;
   return shortText;
 }
+
+export function getError(
+  error = {},
+  defaultError = "Ocurrió un error, intente más tarde."
+) {
+  const { message, response } = error;
+  if (response?.data?.message) {
+    return response?.data?.message;
+  }
+
+  if (response?.statusText) {
+    return response?.statusText;
+  }
+
+  return message || defaultError;
+}
