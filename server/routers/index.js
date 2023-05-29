@@ -98,6 +98,7 @@ router.post("/check", async (req = express.Request, res = express.response) => {
       const isSuccess = question.validOptionIndex.includes(
         userAnswer.selectedOption
       );
+
       return {
         ...question,
         selectedOption: userAnswer.selectedOption,
@@ -106,7 +107,31 @@ router.post("/check", async (req = express.Request, res = express.response) => {
       };
     });
 
-    success(res, questions);
+    const topics = questions.map((q) => q.question).join(", ");
+    const successQuestions = questions.filter((q) => q.isSuccess).length;
+
+    const result = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      temperature: 0.6,
+      messages: [
+        {
+          role: "system",
+          content,
+        },
+        {
+          role: "user",
+          content: `Hazme una evaluación de una prueba sobre ${topics}. 
+                    Donde yo respondí correctamente ${successQuestions} preguntas de ${questions.length}.
+                    Si puedes, califícame del 1 al 10, donde 1 es realmente malo y 10 es realmente bueno.
+                    Además, genera resumidamente temas relacionados para que pueda estudar y mejorar técnicamente en dichos temas.
+                    `,
+        },
+      ],
+    });
+
+    const rating = result.data.choices[0].message.content;
+
+    success(res, { result: questions, rating });
   } catch (err) {
     error(res, err.message);
   }

@@ -13,6 +13,7 @@
     "@emotion/react": "^11.11.0",
     "@mantine/core": "^6.0.11",
     "@mantine/hooks": "^6.0.11",
+    "@mantine/notifications": "^6.0.11",
     "@tanstack/react-query": "^5.0.0-alpha.34",
     "axios": "^1.4.0",
     "classnames": "^2.3.2",
@@ -21,6 +22,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.11.2",
     "react-wrap-balancer": "^0.5.0",
     "sass": "^1.62.1"

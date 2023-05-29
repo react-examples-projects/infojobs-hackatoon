@@ -30,8 +30,8 @@ axios.interceptors.response.use(
   (err) => Promise.reject(err)
 );
 
-export async function getOffers() {
-  const res = await axios.get("/9/offer");
+export async function getOffers(params = {}) {
+  const res = await axios.get("/9/offer", { params });
   return res;
 }
 
@@ -45,9 +45,7 @@ export async function getBasicTest(data) {
   return res;
 }
 
-
 export async function checkBasicTest(data) {
   const res = await remoteApi.post("/check", data);
   return res.data;
 }
-

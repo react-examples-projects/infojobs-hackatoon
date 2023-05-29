@@ -44,7 +44,7 @@ export default function BasicTestModal({ test, tests = [], ...props }) {
   if (results) {
     return (
       <Modal
-        size="600px"
+        size="800px"
         closeOnEscape={false}
         closeOnClickOutside={false}
         opened={isOpenResultModal}
@@ -59,20 +59,28 @@ export default function BasicTestModal({ test, tests = [], ...props }) {
           <Title order={4} ml="1rem">
             Resultados de la prueba básica
           </Title>
+          <Text px="1rem">
+            <pre
+              style={{
+                display: "block",
+                width: "100%",
+                whiteSpace: "pre-wrap",
+                wordBreak: " break-word",
+                lineHeight: "1.4",
+                fontFamily: "inherit",
+              }}
+              dangerouslySetInnerHTML={{ __html: results?.rating }}
+            />
+          </Text>
 
-          {results.map((result, index) => (
+          {results?.result?.map((result) => (
             <Box
               mb="0.5rem"
-              sx={(theme) => ({
+              sx={() => ({
                 maxWidth: "100%",
                 display: "block",
                 width: "100%",
                 textAlign: "left",
-                // backgroundColor: result.validOptionIndex.includes(
-                //   result.selectedOption
-                // )
-                //   ? theme.colors.green[7]
-                //   : theme.colors.dark[6],
                 borderRadius: "5px",
                 cursor: "pointer",
               })}

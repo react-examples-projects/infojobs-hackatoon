@@ -19,9 +19,11 @@ import {
 } from "@mantine/core";
 import { FiAlertCircle } from "react-icons/fi";
 import { getError } from "@helpers/utils";
+import { notifications } from "@mantine/notifications";
 import useTest from "@hooks/useTest";
 import TestWarningModal from "@components/TestWarningModal";
 import BasicTestModal from "@components/BasicTestModal";
+import { useCallback } from "react";
 
 export default function OfferListItem(props) {
   const {
@@ -45,7 +47,15 @@ export default function OfferListItem(props) {
 
   const createBasicTest = async () => {
     try {
-      await mutateAsync(id);
+      const result = await mutateAsync(id);
+      if (result.data?.data?.questions?.length < 1) {
+        notifications.show({
+          title: "Algo ha ido mal",
+          message:
+            "Internamente ha ocurrido un error al crear el test,intenta nuevamente",
+          color: "red",
+        });
+      }
       toggleOpenModalWarning();
       toggleOpenBasicTestModal();
     } catch (err) {
@@ -53,10 +63,16 @@ export default function OfferListItem(props) {
     }
   };
 
+  const d = () => {
+    toggleOpenModalDetails();
+    toggleOpenModalWarning();
+  };
+
   return (
     <>
       {isOpenModalDetails && (
         <OfferDetailsModal
+          createBasicTest={d}
           job={{ ...props, _published, _contractType, _teleworking }}
           opened={isOpenModalDetails}
           onClose={toggleOpenModalDetails}
@@ -148,13 +164,8 @@ export default function OfferListItem(props) {
                   mr="0.4rem"
                   loading={isPending}
                   onClick={toggleOpenModalWarning}
-                  // onClick={() => mutate(id)}
                 >
                   Recrear test
-                </Button>
-
-                <Button size="xs" variant="light">
-                  Analizar oferta
                 </Button>
               </Box>
             </Flex>

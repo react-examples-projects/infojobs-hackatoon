@@ -17,7 +17,7 @@ import {
 } from "@mantine/core";
 import { isNotDef } from "@helpers/utils";
 
-export default function OfferDetailsModal({ job = {}, ...props }) {
+export default function OfferDetailsModal({ job = {}, createBasicTest, ...props }) {
   const {
     id,
     title,
@@ -187,7 +187,12 @@ export default function OfferDetailsModal({ job = {}, ...props }) {
             </Title>
 
             {!isLoading && (
-              <Button size="xs" mt="0.6rem" variant="light">
+              <Button
+                size="xs"
+                mt="0.6rem"
+                variant="light"
+                onClick={createBasicTest}
+              >
                 Recrear test
               </Button>
             )}
