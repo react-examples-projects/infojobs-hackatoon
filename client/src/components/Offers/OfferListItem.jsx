@@ -23,9 +23,9 @@ import { notifications } from "@mantine/notifications";
 import useTest from "@hooks/useTest";
 import TestWarningModal from "@components/TestWarningModal";
 import BasicTestModal from "@components/BasicTestModal";
-import { useCallback } from "react";
+import { memo } from "react";
 
-export default function OfferListItem(props) {
+function OfferListItem(props) {
   const {
     id,
     author,
@@ -235,3 +235,5 @@ export default function OfferListItem(props) {
     </>
   );
 }
+
+export default memo(OfferListItem);

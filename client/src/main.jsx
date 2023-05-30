@@ -1,11 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "app";
-import "@css/index.scss";
-import "inter-ui/inter.css";
 import { Notifications } from "@mantine/notifications";
 import { MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import "@css/index.scss";
+import "inter-ui/inter.css";
+import "nprogress/nprogress.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {

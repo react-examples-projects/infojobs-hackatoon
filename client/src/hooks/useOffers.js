@@ -8,10 +8,12 @@ export default function useOffers(params) {
   });
 
   const offers = data.offers || [];
-
+  const totalPages = data.totalPages ?? 0; 
+  
   return {
     offers,
     data,
+    totalPages,
     ...args,
   };
 }

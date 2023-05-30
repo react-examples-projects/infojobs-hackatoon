@@ -1,24 +1,44 @@
 import useOffers from "@hooks/useOffers";
 import OfferListItem from "@components/Offers/OfferListItem";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Box, Title, Input, Button, NativeSelect } from "@mantine/core";
-import { useCallback, useMemo, useRef, useState } from "react";
+import NProgress from "nprogress";
+import {
+  Box,
+  Title,
+  Input,
+  Button,
+  NativeSelect,
+  Skeleton,
+  Alert,
+} from "@mantine/core";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { provinces } from "@config/constants";
 
-const provincesNames = provinces.map((p) => p.value);
+const placeholder = Array(20).fill(null);
 
 export default function OfferList() {
   const inputSearchRef = useRef(null);
   const [page, setPage] = useState(1);
   const [q, setQ] = useState("javascript");
   const [province, setProvince] = useState("madrid");
-  const { offers, isLoading } = useOffers({ q, province, page });
+  const prevProvince = useRef(province);
+  const { offers, totalPages, isLoading, isPending } = useOffers({
+    q,
+    province,
+    page,
+  });
+  const [offersRender, setOffersRender] = useState([]);
 
-  const search = () => setQ(inputSearchRef.current.value);
+  const search = () => {
+    setPage(1);
+    setQ(inputSearchRef.current.value);
+  };
 
   const fetchNext = () => {
-    setPage(page + 1);
+    if (page !== totalPages) setPage(page + 1);
   };
+
+  const provincesNames = useMemo(() => provinces.map((p) => p.value), []);
 
   const provinceValue = useMemo(() => {
     const key = provinces.find((p) => p.key === province).value;
@@ -26,13 +46,38 @@ export default function OfferList() {
   }, [province]);
 
   const searchProvince = useCallback((event) => {
+    setPage(1);
     const value = event.currentTarget.value;
     const key = provinces.find((p) => p.value === value).key;
     setProvince(key);
   }, []);
 
-  if (isLoading) {
-    return <h2>Cargando ofertas...</h2>;
+  useEffect(() => {
+    if (province !== prevProvince.current) {
+      setOffersRender(offers);
+      prevProvince.current = province;
+    } else if (offers.length > 0) {
+      setOffersRender((prev) => [...prev, ...offers]);
+    }
+  }, [offers, province]);
+
+  useEffect(() => {
+    isLoading || isPending ? NProgress.start() : NProgress.done();
+  }, [isLoading, isPending]);
+
+  if ((isLoading || isPending) && (offersRender.length < 1 || !offers)) {
+    return (
+      <>
+        <Skeleton width="100%" height={74} mb="1rem" />
+        <Skeleton width="100%" height={74} mt="0.8rem" />
+
+        <Skeleton width={145} height={36} mb="3rem" mt="0.8rem" />
+
+        {placeholder.map((_, i) => (
+          <Skeleton width="100%" height={154} key={i} visible mb="1rem" />
+        ))}
+      </>
+    );
   }
 
   return (
@@ -64,12 +109,31 @@ export default function OfferList() {
       </Input.Wrapper>
 
       <Title order={3} mb="2rem" mt="3rem">
-        {offers.length} trabajos rastreados del mundo
+        {offersRender.length} trabajos rastreados del mundo
       </Title>
 
-      {offers.map((offer) => (
-        <OfferListItem {...offer} key={offer.id} />
-      ))}
+      <InfiniteScroll
+        dataLength={offersRender.length}
+        next={fetchNext}
+        hasMore={page < totalPages}
+        loader={isLoading || isPending ? "Cargando..." : null}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>No hay más resultados que mostrar</b>
+          </p>
+        }
+      >
+        {offersRender.length < 1 ? (
+          <Alert title="No hay resultados">
+            Parece que tu busqueda a dado 0 resultados, intenta usando el filtro
+            o mejorando las palabras claves de la busqueda.
+          </Alert>
+        ) : (
+          offersRender.map((offer) => (
+            <OfferListItem {...offer} key={offer.id} />
+          ))
+        )}
+      </InfiniteScroll>
     </Box>
   );
 }
