@@ -11,9 +11,6 @@ const content = `Eres ChatGPT, un gran modelo de lenguaje entrenado por OpenAI. 
 router.post("/", async (req = express.Request, res = express.response) => {
   try {
     const { title, skillsList, description, id } = req.body;
-    let flag = true,
-      tries = 0,
-      errorObj = null;
     let skills = "";
     if (skillsList && skillsList?.length > 0) {
       skills += " El test debe contener temas relacionados a: ";
@@ -21,19 +18,17 @@ router.post("/", async (req = express.Request, res = express.response) => {
       console.log(skills);
     }
 
-    while (flag && tries <= 3) {
-      try {
-        const result = await openai.createChatCompletion({
-          model: "gpt-3.5-turbo",
-          temperature: 0.6,
-          messages: [
-            {
-              role: "system",
-              content,
-            },
-            {
-              role: "user",
-              content: `Crea un test de evaluación técnica para un puesto de "${title}".${skills}
+    const result = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      temperature: 0.6,
+      messages: [
+        {
+          role: "system",
+          content,
+        },
+        {
+          role: "user",
+          content: `Crea un test de evaluación técnica para un puesto de "${title}".${skills}
                       Crea la prueba solamente de los conocimientos o habiladades que requiere el puesto segun la descripción. 
                       Debe ser conciso y sin errores. No quiero que escribas textos demás, solo quiero que me respondas directamente con el formato JSON especificado. 
                       Quiero que el test de evaluación tenga un formato JSON, que empiece con '---' y termine con '---' con la siguiente estructura:
@@ -46,37 +41,23 @@ router.post("/", async (req = express.Request, res = express.response) => {
                     {
                       ...
                     }] ---`,
-            },
-          ],
-        });
+        },
+      ],
+    });
 
-        const data = result.data.choices[0].message.content;
-        const jsons = extractJSONS(data);
-        flag = false;
-        tries++;
+    const data = result.data.choices[0].message.content;
+    const jsons = extractJSONS(data);
+    const test = Array.isArray(jsons?.[0]) ? jsons.flat() : jsons;
+    const basicTest = await Test.create({
+      jobId: id,
+      questions: test,
+    });
+    const testProtected = basicTest.toObject();
 
-        const test = Array.isArray(jsons?.[0]) ? jsons.flat() : jsons;
+    // users cant see the correct answers
+    testProtected.questions.forEach((q) => delete q.validOptionIndex);
 
-        const basicTest = await Test.create({
-          jobId: id,
-          questions: test,
-        });
-
-        const testProtected = basicTest.toObject();
-
-        // users cant see the correct answers
-        testProtected.questions.forEach((q) => delete q.validOptionIndex);
-
-        success(res, testProtected, 201);
-      } catch (err) {
-        console.error(err);
-        errorObj = err;
-      }
-
-      if ((tries >= 3 || flag) && errorObj !== null) {
-        error(res, errorObj.message);
-      }
-    }
+    success(res, testProtected, 201);
   } catch (err) {
     error(res, err, 500);
     console.error(err);

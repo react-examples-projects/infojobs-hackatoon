@@ -136,6 +136,10 @@ export default function BasicTestModal({ test, tests = [], ...props }) {
               </Box>
             </Box>
           ))}
+
+          <Button mx="1rem" onClick={toggleOpenResultModal} fullWidth>
+            Aceptar
+          </Button>
         </Box>
       </Modal>
     );
