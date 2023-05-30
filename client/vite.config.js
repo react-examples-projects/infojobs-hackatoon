@@ -7,18 +7,18 @@ const _dirname =typeof __dirname !== "undefined" ? __dirname : dirname(fileURLTo
 const dir = resolve(_dirname, "./src");
 
 export default defineConfig({
-   optimizeDeps: {
-    exclude: ["dayjs"]
+  optimizeDeps: {
+    exclude: ["dayjs"],
   },
-  server: {
-    proxy: {
-      "/__proxy": {
-        target: "https://api.infojobs.net/api",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/\/__proxy/, ""),
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     "/api": {
+  //       target: "https://api.infojobs.net/api",
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/^\/api/, ""),
+  //     },
+  //   },
+  // },
   resolve: {
     alias: {
       "@assets": join(dir, "/assets"),

@@ -9,7 +9,8 @@ const remoteApi = http.create({
 });
 
 const axios = http.create({
-  baseURL: "/__proxy",
+  //baseURL: "https://api.infojobs.net/api",
+  baseURL: "/api/",
   headers: {
     "Content-Type": "application/json; charset=utf-8",
   },
