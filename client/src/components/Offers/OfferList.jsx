@@ -20,7 +20,7 @@ export default function OfferList() {
   const inputSearchRef = useRef(null);
   const [page, setPage] = useState(1);
   const [q, setQ] = useState("javascript");
-  const [province, setProvince] = useState("madrid");
+  const [province, setProvince] = useState("seleccionar");
   const prevProvince = useRef(province);
   const { offers, totalPages, isLoading, isPending } = useOffers({
     q,

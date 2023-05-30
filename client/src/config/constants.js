@@ -1,5 +1,12 @@
 export const provinces = [
   {
+    id: -861,
+    value: "(Seleccionar)",
+    order: 0,
+    key: "seleccionar",
+    parent: 210,
+  },
+  {
     id: 28,
     value: "A Coruña",
     order: 1,

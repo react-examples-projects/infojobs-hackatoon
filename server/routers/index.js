@@ -60,7 +60,7 @@ router.post("/", async (req = express.Request, res = express.response) => {
     success(res, testProtected, 201);
   } catch (err) {
     error(res, err, 500);
-    console.error(err);
+    console.log(err);
   }
 });
 

@@ -9,7 +9,7 @@ const sx1 = (theme) => ({
 function App() {
   return (
     <Container>
-      <Box sx={sx1} p="2rem" mt="5rem" component="main">
+      <Box sx={sx1} p="2rem" pb="1rem" mb="4rem" mt="5rem" component="main">
         <OfferList />
       </Box>
     </Container>
