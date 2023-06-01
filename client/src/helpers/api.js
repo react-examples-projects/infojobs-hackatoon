@@ -2,7 +2,7 @@ import http from "axios";
 import { TOKEN, ACCESS_TOKEN } from "@config/index";
 
 const remoteApi = http.create({
-  baseURL: "https://infojobs-hackatoon-api-production.up.railway.app/api", //"https://infojobs-hackatoon-server.vercel.app/api", //"http://localhost:3000/api/",
+  baseURL: "https://infojobs-hackatoon-server.vercel.app/api", //"https://infojobs-hackatoon-server.vercel.app/api", //"http://localhost:3000/api/",
   headers: {
     "Content-Type": "application/json; charset=utf-8",
   },

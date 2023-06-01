@@ -18,6 +18,7 @@ const placeholder = Array(20).fill(null);
 
 export default function OfferList() {
   const inputSearchRef = useRef(null);
+  const [bySearch, setBySearch] = useState(false)
   const [page, setPage] = useState(1);
   const [q, setQ] = useState("javascript");
   const [province, setProvince] = useState("seleccionar");
@@ -31,6 +32,7 @@ export default function OfferList() {
 
   const search = () => {
     setPage(1);
+    setBySearch(true);
     setQ(inputSearchRef.current.value);
   };
 
@@ -56,6 +58,9 @@ export default function OfferList() {
     if (province !== prevProvince.current) {
       setOffersRender(offers);
       prevProvince.current = province;
+    } else if (bySearch) {
+      setOffersRender(offers);
+      setBySearch(false);
     } else if (offers.length > 0) {
       setOffersRender((prev) => [...prev, ...offers]);
     }

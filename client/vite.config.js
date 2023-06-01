@@ -10,15 +10,15 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ["dayjs"],
   },
-  // server: {
-  //   proxy: {
-  //     "/api": {
-  //       target: "https://api.infojobs.net/api",
-  //       changeOrigin: true,
-  //       rewrite: (path) => path.replace(/^\/api/, ""),
-  //     },
-  //   },
-  // },
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://api.infojobs.net/api",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
+  },
   resolve: {
     alias: {
       "@assets": join(dir, "/assets"),
