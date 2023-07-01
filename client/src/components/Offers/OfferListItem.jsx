@@ -24,6 +24,7 @@ import useTest from "@hooks/useTest";
 import TestWarningModal from "@components/TestWarningModal";
 import BasicTestModal from "@components/BasicTestModal";
 import { memo } from "react";
+import { useMedia } from "react-use";
 
 function OfferListItem(props) {
   const {
@@ -44,6 +45,7 @@ function OfferListItem(props) {
   const [isOpenModalWarning, toggleOpenModalWarning] = useToggle();
   const [isOpenBasicTestModal, toggleOpenBasicTestModal] = useToggle();
   const { data, isPending, isError, error, mutateAsync } = useTest();
+  const isWide = useMedia("(max-width: 800px)");
 
   const createBasicTest = async () => {
     try {
@@ -118,29 +120,44 @@ function OfferListItem(props) {
           </Box>
 
           <Box sx={{ width: "100%" }}>
-            <Balancer>
+            <Balancer style={{ width: "100%", display: "block" }}>
               <Title order={4}>{title}</Title>
             </Balancer>
             <Text>{author.name}</Text>
 
-            <Flex mt="0.5rem" align="center">
-              <Badge mr="4px">{_contractType}</Badge>
-              {!isNotDef(_teleworking) ? (
-                <Text c="dimmed" size="sm" ml="0.4rem">
-                  | {_teleworking} {isDefinedCity && ` en ${city}`}
+            <Flex
+              mt="0.5rem"
+              aalign={isWide ? "start" : "center"}
+              direction={isWide ? "column" : "row"}
+            >
+              <Badge
+                mr="4px"
+                sx={{ maxWidth: "max-content" }}
+                mb={isWide ? "0.5rem" : "0"}
+              >
+                {_contractType}
+              </Badge>
+              <Flex
+                align={isWide ? "start" : "center"}
+                direction={isWide ? "column" : "row"}
+              >
+                {!isNotDef(_teleworking) ? (
+                  <Text c="dimmed" size="sm" ml={isWide ? "0" : "0.4rem"}>
+                    | {_teleworking} {isDefinedCity && ` en ${city}`}
+                  </Text>
+                ) : isDefinedCity ? (
+                  <Text c="dimmed" ml={isWide ? "0" : "4px"} size="sm">
+                    | {city}
+                  </Text>
+                ) : (
+                  <Text c="dimmed" ml={isWide ? "0" : "4px"} size="sm">
+                    | Ubicación desconocida
+                  </Text>
+                )}
+                <Text c="dimmed" ml={isWide ? "0" : "4px"} size="sm">
+                  | {category.value}
                 </Text>
-              ) : isDefinedCity ? (
-                <Text c="dimmed" ml="4px" size="sm">
-                  | {city}
-                </Text>
-              ) : (
-                <Text c="dimmed" ml="4px" size="sm">
-                  | Ubicación desconocida
-                </Text>
-              )}
-              <Text c="dimmed" ml="4px" size="sm">
-                | {category.value}
-              </Text>
+              </Flex>
             </Flex>
 
             <Flex align="center" justify="space-between" mt="0.5rem">

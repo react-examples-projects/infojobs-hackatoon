@@ -17,7 +17,11 @@ import {
 } from "@mantine/core";
 import { isNotDef } from "@helpers/utils";
 
-export default function OfferDetailsModal({ job = {}, createBasicTest, ...props }) {
+export default function OfferDetailsModal({
+  job = {},
+  createBasicTest,
+  ...props
+}) {
   const {
     id,
     title,
@@ -266,129 +270,127 @@ export default function OfferDetailsModal({ job = {}, createBasicTest, ...props 
             </Grid.Col>
 
             <Grid.Col span={11} pl={0}>
-              <ScrollArea h={840} offsetScrollbars>
-                <Box className="mantine-Modal-Offer-ScrollArea">
-                  <Flex align="start">
-                    <Box mb="2rem" sx={{ width: "100%" }}>
-                      <Title order={3}>Descripción del puesto</Title>
-                      {isLoading ? (
-                        <Skeleton width={380} height={21} />
-                      ) : (
-                        <Flex>
-                          <Text size="sm" c="dimmed">
-                            Experiencia: {experienceMin?.value}
-                          </Text>
-
-                          <Text size="sm" c="dimmed" ml="0.5rem">
-                            - Tipo de jornada: {journey?.value}
-                          </Text>
-                        </Flex>
-                      )}
-
-                      {isLoading ? (
-                        <Skeleton width="100%" height={350} mt="1rem" />
-                      ) : (
-                        <Text>
-                          <pre
-                            style={{
-                              display: "block",
-                              width: "100%",
-                              whiteSpace: "pre-wrap",
-                              wordBreak: " break-word",
-                              lineHeight: "1.4",
-                              fontFamily: "inherit",
-                            }}
-                            dangerouslySetInnerHTML={{ __html: description }}
-                          />
-                        </Text>
-                      )}
-                    </Box>
-                  </Flex>
-
-                  <Box mb="2rem">
-                    <Title order={3}>Habilidades requeridas</Title>
+              <Box className="mantine-Modal-Offer-ScrollArea">
+                <Flex align="start">
+                  <Box mb="2rem" sx={{ width: "100%" }}>
+                    <Title order={3}>Descripción del puesto</Title>
                     {isLoading ? (
-                      <Skeleton mt="1rem" width="100%" height={40} />
-                    ) : skillsList?.length < 1 ? (
-                      <Text mt="1rem">No definidas</Text>
+                      <Skeleton width={380} height={21} />
                     ) : (
-                      <Flex
-                        align="center"
-                        columnGap="4px"
-                        rowGap="7px"
-                        wrap="wrap"
-                        mt="1rem"
-                      >
-                        {skillsList?.map((sk) => (
-                          <Badge
-                            key={sk.skill}
-                            size="lg"
-                            color="gray"
-                            variant="filled"
-                          >
-                            {sk.skill}
-                          </Badge>
-                        ))}
+                      <Flex>
+                        <Text size="sm" c="dimmed">
+                          Experiencia: {experienceMin?.value}
+                        </Text>
+
+                        <Text size="sm" c="dimmed" ml="0.5rem">
+                          - Tipo de jornada: {journey?.value}
+                        </Text>
                       </Flex>
                     )}
-                  </Box>
-
-                  <Box>
-                    <Title order={3}>Información extra</Title>
-                    {isLoading ? (
-                      <Skeleton mt="1rem" width={267} height={24.8} />
-                    ) : (
-                      !isNotDef(link) && (
-                        <a
-                          title="Click para ver más sobre la ofera"
-                          href={link}
-                          style={{ display: "block" }}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          <Text mt="1rem">
-                            Ver más sobre la oferta en infojobs.
-                          </Text>
-                        </a>
-                      )
-                    )}
 
                     {isLoading ? (
-                      <Skeleton mt="1rem" width={287} height={24.8} />
+                      <Skeleton width="100%" height={350} mt="1rem" />
                     ) : (
-                      !isNotDef(author.uri) && (
-                        <a
-                          title="Click para ver más sobre la empresa"
-                          href={author.uri}
-                          style={{ display: "block" }}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          <Text mt="1rem">
-                            Ver más sobre la empresa en infojobs.
-                          </Text>
-                        </a>
-                      )
-                    )}
-
-                    {isLoading ? (
-                      <Skeleton mt="1rem" width={230} height={24.8} />
-                    ) : (
-                      !isNotDef(web) && (
-                        <a
-                          title="Click para visitar el sitio web de la empresa"
-                          href={web}
-                          style={{ display: "block" }}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          <Text mt="1rem">Ver el sitio web de la empresa.</Text>
-                        </a>
-                      )
+                      <Text>
+                        <pre
+                          style={{
+                            display: "block",
+                            width: "100%",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: " break-word",
+                            lineHeight: "1.4",
+                            fontFamily: "inherit",
+                          }}
+                          dangerouslySetInnerHTML={{ __html: description }}
+                        />
+                      </Text>
                     )}
                   </Box>
+                </Flex>
+
+                <Box mb="2rem">
+                  <Title order={3}>Habilidades requeridas</Title>
+                  {isLoading ? (
+                    <Skeleton mt="1rem" width="100%" height={40} />
+                  ) : skillsList?.length < 1 ? (
+                    <Text mt="1rem">No definidas</Text>
+                  ) : (
+                    <Flex
+                      align="center"
+                      columnGap="4px"
+                      rowGap="7px"
+                      wrap="wrap"
+                      mt="1rem"
+                    >
+                      {skillsList?.map((sk) => (
+                        <Badge
+                          key={sk.skill}
+                          size="lg"
+                          color="gray"
+                          variant="filled"
+                        >
+                          {sk.skill}
+                        </Badge>
+                      ))}
+                    </Flex>
+                  )}
                 </Box>
-              </ScrollArea>
+
+                <Box>
+                  <Title order={3}>Información extra</Title>
+                  {isLoading ? (
+                    <Skeleton mt="1rem" width={267} height={24.8} />
+                  ) : (
+                    !isNotDef(link) && (
+                      <a
+                        title="Click para ver más sobre la ofera"
+                        href={link}
+                        style={{ display: "block" }}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        <Text mt="1rem">
+                          Ver más sobre la oferta en infojobs.
+                        </Text>
+                      </a>
+                    )
+                  )}
+
+                  {isLoading ? (
+                    <Skeleton mt="1rem" width={287} height={24.8} />
+                  ) : (
+                    !isNotDef(author.uri) && (
+                      <a
+                        title="Click para ver más sobre la empresa"
+                        href={author.uri}
+                        style={{ display: "block" }}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        <Text mt="1rem">
+                          Ver más sobre la empresa en infojobs.
+                        </Text>
+                      </a>
+                    )
+                  )}
+
+                  {isLoading ? (
+                    <Skeleton mt="1rem" width={230} height={24.8} />
+                  ) : (
+                    !isNotDef(web) && (
+                      <a
+                        title="Click para visitar el sitio web de la empresa"
+                        href={web}
+                        style={{ display: "block" }}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        <Text mt="1rem">Ver el sitio web de la empresa.</Text>
+                      </a>
+                    )
+                  )}
+                </Box>
+              </Box>
             </Grid.Col>
           </Grid>
         </Grid.Col>

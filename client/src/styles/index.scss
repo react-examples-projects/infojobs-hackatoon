@@ -10,12 +10,8 @@
   -webkit-text-size-adjust: 100%;
 }
 
-.mantine-Modal-Offer .mantine-Modal-content {
-  overflow: hidden;
-}
-
 .mantine-Modal-Offer-ScrollArea {
-  max-height: 775px;
+  max-height: max-content;
   overflow-y: auto;
   padding-right: 1rem;
 

@@ -1,8 +1,8 @@
 import http from "axios";
-import { TOKEN, ACCESS_TOKEN } from "@config/index";
+import { TOKEN } from "@config/index";
 
 const remoteApi = http.create({
-  baseURL: "https://infojobs-hackatoon-server.vercel.app/api", //"https://infojobs-hackatoon-server.vercel.app/api", //"http://localhost:3000/api/",
+  baseURL: "http://localhost:3000/api/",//"https://infojobs-hackatoon-api-production.up.railway.app/api" //"https://infojobs-hackatoon-server.vercel.app/api", "http://localhost:3000/api/",
   headers: {
     "Content-Type": "application/json; charset=utf-8",
   },
@@ -22,7 +22,7 @@ remoteApi.interceptors.response.use(
 );
 
 axios.interceptors.request.use(async (config) => {
-  config.headers.Authorization = `Basic ${TOKEN}`; //, Bearer ${ACCESS_TOKEN}
+  config.headers.Authorization = `Basic ${TOKEN}`;
   return config;
 });
 

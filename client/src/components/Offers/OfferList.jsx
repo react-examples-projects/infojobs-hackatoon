@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { provinces } from "@config/constants";
+import { useMedia } from "react-use";
 
 const placeholder = Array(20).fill(null);
 
@@ -29,6 +30,7 @@ export default function OfferList() {
     page,
   });
   const [offersRender, setOffersRender] = useState([]);
+  const isWide = useMedia("(max-width: 570px)");
 
   const search = () => {
     setPage(1);
@@ -108,7 +110,7 @@ export default function OfferList() {
           defaultValue={q}
           size="lg"
         />
-        <Button px="3rem" onClick={search}>
+        <Button px="3rem" onClick={search} fullWidth={isWide}>
           Buscar
         </Button>
       </Input.Wrapper>
